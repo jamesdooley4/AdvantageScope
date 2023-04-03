@@ -19,7 +19,7 @@ self.onmessage = (event) => {
 
   try {
     reader.forEach((record) => {
-      let key = record.getEventKey() + "/" + record.getTeamName;
+      let key: string = record.getTeamName();
       let timestamp = record.getTimestamp();
       log.putNumberArray(key, timestamp, record.getRobotPosition());
     });

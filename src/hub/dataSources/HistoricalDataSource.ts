@@ -7,7 +7,8 @@ export class HistoricalDataSource {
     ".rlog": "hub$rlogWorker.js",
     ".wpilog": "hub$wpilogWorker.js",
     ".dslog": "hub$dsLogWorker.js",
-    ".dsevents": "hub$dsLogWorker.js"
+    ".dsevents": "hub$dsLogWorker.js",
+    ".json": "hub$zebraTagWorker.js"
   };
 
   private path: string | null = null;

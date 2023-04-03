@@ -1,6 +1,5 @@
 /** A record in the zebra tag log. */
 export class ZebraTagDecoderRecord {
-  private eventKey: string;
   private timestamp: number;
   private teamName: string;
   private robotPosition: number[];
@@ -12,16 +11,10 @@ export class ZebraTagDecoderRecord {
    * @param teamName The team name
    * @param robotPosition: The robot position [x,y]
    */
-  constructor(eventKey: string, timestamp: number, teamName: string, robotPosition: number[]) {
-    this.eventKey = eventKey;
+  constructor(eventKey: string, timestamp: number, alliance: string, teamName: string, robotPosition: number[]) {
     this.timestamp = timestamp;
-    this.teamName = teamName;
+    this.teamName = eventKey.concat("/").concat(alliance).concat("/").concat(teamName);
     this.robotPosition = robotPosition;
-  }
-
-  /** Gets the event key. */
-  getEventKey(): string {
-    return this.eventKey;
   }
 
   /** Gets the record timestamp. */
@@ -40,7 +33,11 @@ export class ZebraTagDecoderRecord {
   }
 }
 
-/** WPILOG decoder. */
+function feetToMeters(feet: number): number {
+  return feet * 0.3048;
+}
+
+/** ZebraTag log decoder. */
 export class ZebraTagDecoder {
   private data: any;
 
@@ -67,12 +64,12 @@ export class ZebraTagDecoder {
     let eventKey: string = this.data.key;
     for (let timestamp of this.data.times) {
       for (let team of this.data.alliances.red) {
-        let robotPosition: number[] = [team.xs[index], team.ys[index]];
+        let robotPosition: number[] = [feetToMeters(team.xs[index]), feetToMeters(team.ys[index])];
         callback(new ZebraTagDecoderRecord(eventKey, timestamp, team.team_key, robotPosition));
       }
 
       for (let team of this.data.alliances.blue) {
-        let robotPosition: number[] = [team.xs[index], team.ys[index]];
+        let robotPosition: number[] = [feetToMeters(team.xs[index]), feetToMeters(team.ys[index])];
         callback(new ZebraTagDecoderRecord(eventKey, timestamp, team.team_key, robotPosition));
       }
       index++;

@@ -30,6 +30,7 @@ const workerBundles = [
   bundle("hub/dataSources/rlogWorker.ts", "hub$rlogWorker.js"),
   bundle("hub/dataSources/wpilogWorker.ts", "hub$wpilogWorker.js"),
   bundle("hub/dataSources/dsLogWorker.ts", "hub$dsLogWorker.js"),
+  bundle("hub/dataSources/zebraTagWorker.ts", "hub$zebraTagWorker.js"),
   bundle("hub/exportWorker.ts", "hub$exportWorker.js")
 ];
 
