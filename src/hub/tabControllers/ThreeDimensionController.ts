@@ -203,7 +203,8 @@ export default class ThreeDimensionController extends TimelineVizController {
 
     // Returns the current value for a 2D field
     let get2DValue = (key: string, height: number = 0): Pose3d[] => {
-      let localTime = key.startsWith("ZT:") ? zebraTime : time;
+      let isZebraData: boolean = key.startsWith("ZT:");
+      let localTime = isZebraData ? zebraTime : time;
       let logData = window.log.getNumberArray(key, localTime, localTime);
       if (
         logData &&
@@ -216,8 +217,10 @@ export default class ThreeDimensionController extends TimelineVizController {
             pose2dTo3d(
               {
                 translation: [
-                  convert(logData.values[0][0], this.UNIT_DISTANCE.value, "meters"),
-                  convert(logData.values[0][1], this.UNIT_DISTANCE.value, "meters")
+                  isZebraData
+                    ? logData.values[0][0]
+                    : convert(logData.values[0][0], this.UNIT_DISTANCE.value, "meters"),
+                  isZebraData ? logData.values[0][1] : convert(logData.values[0][1], this.UNIT_DISTANCE.value, "meters")
                 ],
                 rotation: 0
               },
