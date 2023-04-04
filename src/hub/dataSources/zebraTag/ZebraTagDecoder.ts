@@ -64,12 +64,12 @@ export class ZebraTagDecoder {
     let eventKey: string = this.data.key;
     for (let timestamp of this.data.times) {
       for (let team of this.data.alliances.red) {
-        let robotPosition: number[] = [feetToMeters(team.xs[index]), feetToMeters(team.ys[index]), 0.0];
+        let robotPosition: number[] = [feetToMeters(team.xs[index]), feetToMeters(team.ys[index])];
         callback(new ZebraTagDecoderRecord(eventKey, timestamp, "red", team.team_key, robotPosition));
       }
 
       for (let team of this.data.alliances.blue) {
-        let robotPosition: number[] = [feetToMeters(team.xs[index]), feetToMeters(team.ys[index]), 0.0];
+        let robotPosition: number[] = [feetToMeters(team.xs[index]), feetToMeters(team.ys[index])];
         callback(new ZebraTagDecoderRecord(eventKey, timestamp, "blue", team.team_key, robotPosition));
       }
       index++;
