@@ -13,7 +13,7 @@ export class ZebraTagDecoderRecord {
    */
   constructor(eventKey: string, timestamp: number, alliance: string, teamName: string, robotPosition: number[]) {
     this.timestamp = timestamp;
-    this.teamName = eventKey.concat("/").concat(alliance).concat("/").concat(teamName);
+    this.teamName = "ZT:/".concat(eventKey).concat("/").concat(alliance).concat("/").concat(teamName);
     this.robotPosition = robotPosition;
   }
 
