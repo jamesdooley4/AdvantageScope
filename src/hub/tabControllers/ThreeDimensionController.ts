@@ -21,6 +21,7 @@ export default class ThreeDimensionController extends TimelineVizController {
   private ROBOT_SOURCE_LINK: HTMLInputElement;
   private UNIT_DISTANCE: HTMLInputElement;
   private UNIT_ROTATION: HTMLInputElement;
+  private ZEBRA_TIME_OFFSET: HTMLInputElement;
 
   private lastOptions: { [id: string]: any } | null = null;
 
@@ -89,6 +90,7 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.ROBOT_SOURCE_LINK = configBody.children[2].children[0].children[2] as HTMLInputElement;
     this.UNIT_DISTANCE = configBody.children[3].children[0].children[1] as HTMLInputElement;
     this.UNIT_ROTATION = configBody.children[3].children[0].children[2] as HTMLInputElement;
+    this.ZEBRA_TIME_OFFSET = configBody.children[4].children[0].children[1] as HTMLInputElement;
 
     // Set default alliance value
     this.ALLIANCE.value = "blue";
@@ -127,7 +129,8 @@ export default class ThreeDimensionController extends TimelineVizController {
       alliance: this.ALLIANCE.value,
       robot: this.ROBOT.value,
       unitDistance: this.UNIT_DISTANCE.value,
-      unitRotation: this.UNIT_ROTATION.value
+      unitRotation: this.UNIT_ROTATION.value,
+      zebraTimeOffset: this.ZEBRA_TIME_OFFSET.value
     };
   }
 
@@ -138,6 +141,7 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.ROBOT.value = options.robot;
     this.UNIT_DISTANCE.value = options.unitDistance;
     this.UNIT_ROTATION.value = options.unitRotation;
+    this.ZEBRA_TIME_OFFSET.value = options.zebraTimeOffset;
     this.updateFieldRobotOptions();
   }
 
@@ -155,7 +159,7 @@ export default class ThreeDimensionController extends TimelineVizController {
   }
 
   getCommand(time: number) {
-    let fields = this.getFields();
+    let zebraTime: number = time - Number.parseFloat(this.ZEBRA_TIME_OFFSET.value);
 
     // Add field and robot options
     if (this.FIELD.children.length == 0 && this.ROBOT.children.length == 0 && window.frcData) {
@@ -199,10 +203,12 @@ export default class ThreeDimensionController extends TimelineVizController {
 
     // Returns the current value for a 2D field
     let get2DValue = (key: string, height: number = 0): Pose3d[] => {
-      let logData = window.log.getNumberArray(key, time, time);
+      let isZebraData: boolean = key.startsWith("ZT:");
+      let localTime = isZebraData ? zebraTime : time;
+      let logData = window.log.getNumberArray(key, localTime, localTime);
       if (
         logData &&
-        logData.timestamps[0] <= time &&
+        logData.timestamps[0] <= localTime &&
         (logData.values[0].length == 2 || logData.values[0].length % 3 == 0)
       ) {
         let poses: Pose3d[] = [];
@@ -211,8 +217,10 @@ export default class ThreeDimensionController extends TimelineVizController {
             pose2dTo3d(
               {
                 translation: [
-                  convert(logData.values[0][0], this.UNIT_DISTANCE.value, "meters"),
-                  convert(logData.values[0][1], this.UNIT_DISTANCE.value, "meters")
+                  isZebraData
+                    ? logData.values[0][0]
+                    : convert(logData.values[0][0], this.UNIT_DISTANCE.value, "meters"),
+                  isZebraData ? logData.values[0][1] : convert(logData.values[0][1], this.UNIT_DISTANCE.value, "meters")
                 ],
                 rotation: 0
               },

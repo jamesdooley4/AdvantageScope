@@ -944,7 +944,7 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select a robot log file to open",
                 properties: ["openFile"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }]
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "json"] }]
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -962,7 +962,7 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select a robot log file to merge with the current data",
                 properties: ["openFile"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }]
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "json"] }]
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
